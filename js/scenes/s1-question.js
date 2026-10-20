@@ -36,8 +36,11 @@ export function render(stage, { copy, config, fx, next, signal, after }) {
     const inset = fx.safeInsets();
     const vw = window.visualViewport?.width ?? window.innerWidth;
     const vh = window.visualViewport?.height ?? window.innerHeight;
-    const bounds = { left: 12 + inset.left, top: 84 + inset.top, right: vw - 12 - inset.right, bottom: vh - 76 - inset.bottom };
     const size = { w: no.offsetWidth * s.no, h: no.offsetHeight * s.no };
+    // Keep below the question too, but never squeeze out more than the top half of the screen.
+    const qBottom = stage.querySelector('.q').getBoundingClientRect().bottom + 8;
+    const top = Math.max(84 + inset.top, Math.min(qBottom, vh / 2));
+    const bounds = { left: 12 + inset.left, top, right: vw - 12 - inset.right, bottom: vh - 76 - inset.bottom };
     const spot = pickSpot(bounds, size, avoid);
     no.style.left = `${spot.x}px`;
     no.style.top = `${spot.y}px`;
@@ -77,6 +80,7 @@ export function render(stage, { copy, config, fx, next, signal, after }) {
     if (done) return;
     done = true;
     fx.heartBurst(yes);
+    if (document.activeElement === no) yes.focus();
     no.hidden = true;
     stage.querySelector('.kid').hidden = false;
     after(config.YES_ADVANCE_MS, next);

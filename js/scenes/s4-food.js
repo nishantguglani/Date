@@ -21,6 +21,7 @@ export function render(stage, { state, copy, config, next, signal }) {
     </div>`;
 
   const items = stage.querySelector('.plate-items');
+  let restoring = true; // first draw: whatever is already on the plate just sits there
   const drawPlate = () => {
     const emojis = c.options.filter(o => state.food.includes(o.id)).map(o => o.emoji);
     if (state.foodOther.trim()) emojis.push('✍️');
@@ -28,9 +29,10 @@ export function render(stage, { state, copy, config, next, signal }) {
     items.replaceChildren(...emojis.map(e => {
       const s = document.createElement('span');
       s.textContent = e;
-      if (already.has(e)) s.className = 'stay';
+      if (restoring || already.has(e)) s.className = 'stay';
       return s;
     }));
+    restoring = false;
   };
 
   bindMultiSelect({

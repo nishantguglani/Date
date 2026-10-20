@@ -13,11 +13,17 @@ export function render(stage, { state, copy, config, next, signal }) {
     <input id="act-other" class="write" type="text" maxlength="${config.INPUT_MAX}" placeholder="${c.placeholder}" autocomplete="off" enterkeyhint="done">
     <button class="btn next" type="button" hidden>${copy.chrome.next}</button>`;
 
+  const stubs = [...stage.querySelectorAll('.stub')];
   bindMultiSelect({
-    buttons: [...stage.querySelectorAll('.stub')],
+    buttons: stubs,
     input: stage.querySelector('.write'),
     nextBtn: stage.querySelector('.next'),
     state, listKey: 'activities', otherKey: 'activityOther', signal,
+  });
+  // Coming back via ← Back: stubs she already tore shouldn't tear again.
+  stubs.forEach(b => {
+    if (b.getAttribute('aria-pressed') === 'true') b.classList.add('stay');
+    b.addEventListener('click', () => b.classList.remove('stay'), { signal });
   });
   stage.querySelector('.next').addEventListener('click', next, { signal });
 }

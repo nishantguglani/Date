@@ -53,19 +53,22 @@ export function noLabel(n, s1) {
 
 const overlaps = (a, b) => a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top;
 
-// Random top-left point for a box of `size` inside `bounds` that does not overlap `avoid`.
+// Random whole-pixel top-left point for a box of `size` inside `bounds` that does not overlap `avoid`.
+// Bounds may be fractional: round the edges inwards so the box never pokes out.
 export function pickSpot(bounds, size, avoid, rand = Math.random) {
-  const maxX = Math.max(bounds.left, bounds.right - size.w);
-  const maxY = Math.max(bounds.top, bounds.bottom - size.h);
+  const minX = Math.ceil(bounds.left);
+  const minY = Math.ceil(bounds.top);
+  const maxX = Math.max(minX, Math.floor(bounds.right - size.w));
+  const maxY = Math.max(minY, Math.floor(bounds.bottom - size.h));
   const box = (x, y) => ({ left: x, top: y, right: x + size.w, bottom: y + size.h });
   for (let i = 0; i < 40; i++) {
-    const x = Math.floor(bounds.left + rand() * (maxX - bounds.left));
-    const y = Math.floor(bounds.top + rand() * (maxY - bounds.top));
+    const x = Math.round(minX + rand() * (maxX - minX));
+    const y = Math.round(minY + rand() * (maxY - minY));
     if (!overlaps(box(x, y), avoid)) return { x, y };
   }
-  const corners = [[bounds.left, bounds.top], [maxX, bounds.top], [bounds.left, maxY], [maxX, maxY]];
+  const corners = [[minX, minY], [maxX, minY], [minX, maxY], [maxX, maxY]];
   const [x, y] = corners.find(([cx, cy]) => !overlaps(box(cx, cy), avoid)) ?? corners[3];
-  return { x: Math.floor(x), y: Math.floor(y) };
+  return { x, y };
 }
 
 export function toggleIn(list, id) {

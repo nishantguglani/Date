@@ -20,7 +20,9 @@ const backBtn = document.querySelector('.back');
 
 let current = -1;
 let controller = null;
+let shownAt = 0;
 const history = [];
+const TRANSITION_MS = 450; // matches --t in style.css
 
 function updateChrome(index) {
   document.body.classList.toggle('on-envelope', index === 0);
@@ -37,6 +39,7 @@ function show(index, { isBack = false } = {}) {
   const { signal } = controller;
   if (!isBack && current >= 0) history.push(current);
   current = index;
+  shownAt = performance.now();
 
   const old = stage.querySelector('.scene:not(.leaving)');
   const el = document.createElement('section');
@@ -46,7 +49,7 @@ function show(index, { isBack = false } = {}) {
 
   const ctx = {
     state, copy, config, fx, signal,
-    next: () => { if (current === index) show(index + 1); },
+    next: () => { if (current === index && index + 1 < scenes.length) show(index + 1); },
     after: (ms, fn) => {
       const t = setTimeout(fn, ms);
       signal.addEventListener('abort', () => clearTimeout(t), { once: true });
@@ -64,7 +67,9 @@ function show(index, { isBack = false } = {}) {
   el.querySelector('h1')?.focus({ preventScroll: true });
 }
 
+// A quick double tap would otherwise pop two scenes; ignore Back until the slide has finished.
 function back() {
+  if (performance.now() - shownAt < TRANSITION_MS) return;
   if (history.length) show(history.pop(), { isBack: true });
 }
 

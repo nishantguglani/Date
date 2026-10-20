@@ -9,7 +9,7 @@ export function render(stage, { state, copy, config, next, signal, after }) {
       <button class="flip" type="button" data-day="${d}" aria-pressed="false">
         <span class="flip-inner">
           <span class="face front">${c[d].dow}<b>${c[d].date}</b>${c[d].mon}</span>
-          <span class="face back-face">${c[d].flipped}</span>
+          <span class="face back-face" aria-hidden="true">${c[d].flipped}</span>
         </span>
       </button>`).join('')}
     </div>
@@ -34,7 +34,13 @@ export function render(stage, { state, copy, config, next, signal, after }) {
   let donoUsed = false;
   let cancelFallback = null;
 
-  const paint = () => cards.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.day === state.day)));
+  // Only the face that is showing gets read out.
+  const paint = () => cards.forEach(b => {
+    const on = b.dataset.day === state.day;
+    b.setAttribute('aria-pressed', String(on));
+    b.querySelector('.front').setAttribute('aria-hidden', String(on));
+    b.querySelector('.back-face').setAttribute('aria-hidden', String(!on));
+  });
   const showNext = withArrow => { nextBtn.hidden = false; nextArrow.hidden = !withArrow; };
 
   function pick(day) {

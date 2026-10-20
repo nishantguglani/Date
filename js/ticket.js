@@ -1,6 +1,8 @@
 // Draws the ADMIT TWO ticket at 1080×1350. `p` is the object from logic.planLists().
 const W = 1080;
 const H = 1350;
+// Tried after the text fonts, so emoji get a colour glyph without changing how letters look.
+const EMOJI = '"Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji"';
 
 function roundRect(g, x, y, w, h, r) {
   g.beginPath();
@@ -70,10 +72,10 @@ export function drawTicket(canvas, p, copy) {
 
   g.textAlign = 'center';
   g.fillStyle = '#9b1c1c';
-  g.font = '96px "Special Elite", "Courier New", monospace';
+  g.font = `96px "Special Elite", "Courier New", monospace, ${EMOJI}`;
   g.fillText(c.admit, W / 2, y + 140);
   g.fillStyle = '#3b2a1f';
-  g.font = '700 72px Caveat, cursive';
+  g.font = `700 72px Caveat, cursive, ${EMOJI}`;
   g.fillText(c.starring, W / 2, y + 225);
 
   const rows = [
@@ -87,9 +89,9 @@ export function drawTicket(canvas, p, copy) {
   g.textAlign = 'left';
   for (const [icon, text] of rows) {
     g.fillStyle = '#3b2a1f';
-    g.font = '50px sans-serif';
+    g.font = `50px ${EMOJI}, sans-serif`;
     g.fillText(icon, x + 70, ty);
-    g.font = '700 52px Caveat, cursive';
+    g.font = `700 52px Caveat, cursive, ${EMOJI}`;
     const lines = wrap(g, text, w - 260, 2);
     lines.forEach((ln, i) => g.fillText(ln, x + 150, ty + i * 58));
     ty += lines.length * 58 + 28;
@@ -98,13 +100,13 @@ export function drawTicket(canvas, p, copy) {
   g.textAlign = 'center';
   if (p.sequel) {
     g.fillStyle = '#3d5a2a';
-    g.font = '700 56px Caveat, cursive';
+    g.font = `700 56px Caveat, cursive, ${EMOJI}`;
     g.fillText(c.comingSoon, W / 2, ty + 20);
   }
   g.fillStyle = '#9b1c1c';
-  g.font = '700 60px Caveat, cursive';
+  g.font = `700 60px Caveat, cursive, ${EMOJI}`;
   g.fillText(c.title, W / 2, y + h - 95);
   g.fillStyle = '#3b2a1f';
-  g.font = '30px "Special Elite", "Courier New", monospace';
+  g.font = `30px "Special Elite", "Courier New", monospace, ${EMOJI}`;
   g.fillText(c.serial, W / 2, y + h - 45);
 }

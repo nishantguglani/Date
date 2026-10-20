@@ -79,6 +79,18 @@ test('pickSpot falls back to a free corner when random tries keep hitting', () =
   assert.deepEqual(spot, { x: 0, y: 0 });
 });
 
+test('pickSpot keeps whole-pixel spots inside fractional bounds', () => {
+  const bounds = { left: 12.6, top: 84.4, right: 362.7, bottom: 591.3 };
+  const size = { w: 80.5, h: 48.2 };
+  const avoid = { left: 0, top: 0, right: 0, bottom: 0 };
+  for (const r of [0, 0.25, 0.5, 0.999999]) {
+    const { x, y } = pickSpot(bounds, size, avoid, () => r);
+    assert.ok(Number.isInteger(x) && Number.isInteger(y), 'whole pixels');
+    assert.ok(x >= bounds.left && x + size.w <= bounds.right, 'x in bounds');
+    assert.ok(y >= bounds.top && y + size.h <= bounds.bottom, 'y in bounds');
+  }
+});
+
 test('toggleIn adds then removes', () => {
   const list = [];
   assert.equal(toggleIn(list, 'movie'), true);

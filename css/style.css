@@ -302,9 +302,12 @@ body.night #gnome .gnome-cap { color: var(--cream); }
   transition: transform .25s cubic-bezier(.3, 1.8, .5, 1), opacity .2s;
 }
 .stub[aria-pressed="true"] .stamp { transform: translateY(-50%) rotate(-10deg) scale(1); opacity: 1; }
+.stub.stay { animation: none; }
+/* The ticket mask clips an outside outline; draw it inside, clear of the side notches. */
+.stub:focus-visible { outline-offset: -12px; }
 @keyframes tear { 30% { transform: rotate(-1.5deg) translateX(-3px); } }
 .write {
-  width: 100%; max-width: 320px; margin-top: 16px; padding: 6px 4px;
+  width: 100%; max-width: 320px; min-height: 44px; margin-top: 16px; padding: 6px 4px;
   font-size: 24px; color: var(--ink); background: transparent;
   border: 0; border-bottom: 2px solid var(--ink); border-radius: 0;
 }

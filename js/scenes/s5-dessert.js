@@ -1,4 +1,4 @@
-export function render(stage, { state, copy, next, signal, after }) {
+export function render(stage, { state, copy, fx, next, signal, after }) {
   const c = copy.s5;
   stage.innerHTML = `
     <h1 class="q" tabindex="-1">${c.question}</h1>
@@ -18,7 +18,8 @@ export function render(stage, { state, copy, next, signal, after }) {
     if (tiny.classList.contains('melted')) { choose('yes'); return; }
     if (tiny.classList.contains('melt')) return;
     tiny.classList.add('melt');
-    after(650, () => {
+    // Wait out the melt (0.6s, or 150ms under reduced motion).
+    after(fx.reduced() ? 160 : 650, () => {
       tiny.className = 'btn melted';
       tiny.textContent = c.yes;
     });

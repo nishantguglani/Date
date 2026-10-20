@@ -2,7 +2,7 @@ import { config } from './config.js';
 import { copy } from './copy.js';
 import { gnome } from './art.js';
 
-const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+export const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 const layer = () => document.getElementById('fx');
 
 /* ---------- Audio ---------- */
@@ -45,7 +45,10 @@ export function startMusic() {
       a.createMediaElementSource(music).connect(gain).connect(a.destination);
     }
   }
-  Promise.resolve(music.play()).then(() => {
+  // play() and resume() both start inside the tap; only the fade waits for them (iOS resumes late).
+  const resumed = a ? Promise.resolve(a.resume()).catch(() => {}) : null;
+  Promise.all([music.play(), resumed]).then(() => {
+    if (muted) { music.pause(); return; }
     playing = true;
     if (gain) {
       const t = a.currentTime;
@@ -57,13 +60,28 @@ export function startMusic() {
     }
     syncMute();
   }).catch(() => {
+    // Blocked: leave her mute choice alone so the next tap on the record can try again.
     playing = false;
-    muted = true;
     syncMute();
   });
 }
 
+// Pause when the tab or app goes to the background; pick up again on return.
+let hiddenWhilePlaying = false;
+document.addEventListener('visibilitychange', () => {
+  if (!music) return;
+  if (document.hidden) {
+    hiddenWhilePlaying = !music.paused;
+    if (hiddenWhilePlaying) { music.pause(); playing = false; syncMute(); }
+  } else if (hiddenWhilePlaying) {
+    hiddenWhilePlaying = false;
+    if (!muted) startMusic();
+  }
+});
+
 export function toggleMute() {
+  // Not muted but silent (play was blocked): treat the tap as "play".
+  if (!muted && music?.paused) { startMusic(); return; }
   muted = !muted;
   if (muted) {
     music?.pause();
