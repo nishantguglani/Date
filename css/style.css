@@ -222,7 +222,9 @@ body.on-envelope .scene { padding-top: calc(24px + var(--sat)); }
 /* ============ Scene 1 ============ */
 .btn-row { display: flex; flex-wrap: wrap; gap: 18px; justify-content: center; align-items: center; margin-top: 10px; }
 .yes { transform: scale(var(--yes-scale, 1)); transition: transform .25s cubic-bezier(.3, 1.5, .5, 1); }
-.no { transform: scale(var(--no-scale, 1)); transform-origin: 0 0; transition: transform .25s, left .25s, top .25s; touch-action: none; }
+.no { transform: scale(var(--no-scale, 1)); transform-origin: 0 0; transition: transform .25s, left .25s, top .25s; touch-action: none; white-space: nowrap; }
+.yes:active { transform: scale(var(--yes-scale, 1)) translateY(2px); }
+.no:active { transform: scale(var(--no-scale, 1)); }
 .no.free { position: fixed; z-index: 7; margin: 0; }
 .no.shake { animation: shake .4s; }
 @keyframes shake { 20%, 60% { translate: -6px 0; } 40%, 80% { translate: 6px 0; } }
