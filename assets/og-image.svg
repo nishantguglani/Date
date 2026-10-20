@@ -39,6 +39,6 @@
     <text x="22" y="190" font-family="Courier New, monospace" font-size="20" fill="#d4a017">ROLL: PARCHE</text>
   </g>
   <text x="600" y="565" text-anchor="middle" font-family="Segoe Print, Bradley Hand, Georgia, serif" font-size="64" font-weight="700" fill="#9b1c1c">For Parche</text>
-  <path d="M790 545s-22-13-22-27a12 12 0 0 1 22-6.5A12 12 0 0 1 812 518c0 14-22 27-22 27z" fill="#9b1c1c"/>
+  <path transform="translate(26 4)" d="M790 545s-22-13-22-27a12 12 0 0 1 22-6.5A12 12 0 0 1 812 518c0 14-22 27-22 27z" fill="#9b1c1c"/>
   <rect width="1200" height="630" fill="url(#vig)"/>
 </svg>
