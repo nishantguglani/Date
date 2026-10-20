@@ -268,3 +268,33 @@ body.on-envelope .scene { padding-top: calc(24px + var(--sat)); }
 .chalk-dono { position: absolute; width: 64px; height: 56px; left: calc(50% + 70px); top: -40px; }
 .next-wrap { position: relative; }
 .chalk-next { position: absolute; width: 56px; height: 48px; right: -60px; top: -18px; }
+
+/* ============ Scene 3 ============ */
+.stubs { display: flex; flex-direction: column; gap: 10px; align-items: center; width: 100%; }
+.stub {
+  position: relative; width: 100%; max-width: 320px; min-height: 52px;
+  padding: 10px 76px 10px 24px; text-align: left; cursor: pointer;
+  font: 18px var(--type); color: var(--film); background: var(--mustard);
+  border: 0; border-radius: 4px;
+  -webkit-mask: radial-gradient(circle 9px at 0 50%, #0000 98%, #000) left / 51% 100% no-repeat,
+                radial-gradient(circle 9px at 100% 50%, #0000 98%, #000) right / 51% 100% no-repeat;
+          mask: radial-gradient(circle 9px at 0 50%, #0000 98%, #000) left / 51% 100% no-repeat,
+                radial-gradient(circle 9px at 100% 50%, #0000 98%, #000) right / 51% 100% no-repeat;
+}
+.stub::before { content: ""; position: absolute; top: 6px; bottom: 6px; right: 66px; border-left: 2px dashed rgba(43, 43, 43, .4); }
+.stub[aria-pressed="true"] { color: var(--cream); background: var(--red); animation: tear .35s; }
+.stub[aria-pressed="true"]::before { border-color: rgba(244, 234, 213, .5); }
+.stub .stamp {
+  position: absolute; right: 8px; top: 50%; padding: 2px 4px;
+  font-size: 12px; border: 2px solid currentColor;
+  transform: translateY(-50%) rotate(-10deg) scale(0); opacity: 0;
+  transition: transform .25s cubic-bezier(.3, 1.8, .5, 1), opacity .2s;
+}
+.stub[aria-pressed="true"] .stamp { transform: translateY(-50%) rotate(-10deg) scale(1); opacity: 1; }
+@keyframes tear { 30% { transform: rotate(-1.5deg) translateX(-3px); } }
+.write {
+  width: 100%; max-width: 320px; margin-top: 16px; padding: 6px 4px;
+  font-size: 24px; color: var(--ink); background: transparent;
+  border: 0; border-bottom: 2px solid var(--ink); border-radius: 0;
+}
+.write::placeholder { color: rgba(59, 42, 31, .6); }
