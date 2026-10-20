@@ -178,3 +178,43 @@ body.on-envelope .scene { padding-top: calc(24px + var(--sat)); }
   .scene.entering { opacity: 0; }
   #mute.spinning svg { animation: none; }
 }
+
+/* ============ Envelope ============ */
+.envelope-scene { justify-content: center; }
+.envelope {
+  position: relative; width: min(300px, 80vw); aspect-ratio: 3 / 2; margin-top: 24px;
+  padding: 0; border: 0; background: none; cursor: pointer; perspective: 900px;
+}
+.envelope > span { position: absolute; display: block; }
+.envelope svg { display: block; width: 100%; height: 100%; }
+.env-back { inset: 0; z-index: 0; background: #e2d0a4; border-radius: 6px; box-shadow: 0 8px 18px rgba(59, 42, 31, .25); }
+.flap { left: 0; right: 0; top: 0; height: 62%; z-index: 4; transform-origin: top; transition: transform .6s ease-in-out, z-index 0s .3s; }
+.letter {
+  left: 7%; right: 7%; top: 8%; bottom: 8%; z-index: 2;
+  background: var(--paper-hi) repeating-linear-gradient(transparent 0 13px, rgba(155, 28, 28, .12) 13px 14px);
+  border-radius: 4px; transition: transform .9s .35s cubic-bezier(.2, .8, .2, 1);
+}
+.env-front { inset: 0; z-index: 3; pointer-events: none; }
+.seal { left: 50%; top: 62%; width: 64px; height: 64px; z-index: 5; transform: translate(-50%, -50%); }
+.seal .crack { opacity: 0; transition: opacity .1s; }
+.envelope.open .seal .crack { opacity: 1; }
+.envelope.open .seal { animation: seal-off .7s .15s forwards; }
+.envelope.open .flap { transform: rotateX(180deg); z-index: 1; }
+.envelope.open .letter { transform: translateY(-58%); }
+@keyframes seal-off { to { transform: translate(-50%, 40%) rotate(25deg); opacity: 0; } }
+.env-to { font-weight: 700; font-size: 42px; color: var(--red); margin: 26px 0 4px; }
+.env-hint { font: 16px var(--type); opacity: .75; margin: 0; animation: breathe 2s ease-in-out infinite; }
+@keyframes breathe { 50% { opacity: .35; } }
+.env-quote {
+  position: absolute; left: 0; right: 0; bottom: calc(18px + var(--sab));
+  margin: 0; padding: 0 70px; font: italic 16px var(--type); opacity: .7;
+}
+.envelope-scene.opened .envelope, .envelope-scene.opened .env-to { display: none; }
+.letter-card {
+  width: 100%; max-width: 340px; padding: 30px 22px 26px;
+  background: var(--paper-hi) repeating-linear-gradient(transparent 0 31px, rgba(155, 28, 28, .1) 31px 32px);
+  border-radius: 6px; box-shadow: 0 8px 22px rgba(59, 42, 31, .25);
+  transform: rotate(-1.5deg); animation: rise .6s cubic-bezier(.2, .8, .2, 1);
+}
+.letter-line { font-size: 30px; line-height: 1.2; margin: 0 0 22px; }
+@keyframes rise { from { transform: translateY(40px) rotate(-1.5deg); opacity: 0; } }
