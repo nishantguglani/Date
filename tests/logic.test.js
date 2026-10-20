@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { copy } from '../js/copy.js';
-import { timeLabel, captionFor, skyWeights, starsVisible, dodgeScales, noLabel, pickSpot, toggleIn, canProceed } from '../js/logic.js';
+import { timeLabel, captionFor, skyWeights, starsVisible, dodgeScales, noLabel, pickSpot, toggleIn, canProceed, isSequel, planLists, whatsAppText, whatsAppUrl, calendarDates, calendarUrl } from '../js/logic.js';
 
 test('timeLabel maps slider index to a 12-hour label', () => {
   assert.equal(timeLabel(0), '10:00 AM');
@@ -92,4 +92,74 @@ test('canProceed needs a pick or non-blank text', () => {
   assert.equal(canProceed([], '   '), false);
   assert.equal(canProceed(['pizza'], ''), true);
   assert.equal(canProceed([], 'Bowling'), true);
+});
+
+const satState = () => ({
+  day: 'sat', activities: ['museum', 'movie'], activityOther: '  Bowling ',
+  food: ['pizza'], foodOther: '', dessert: 'obviously', time: 32,
+});
+
+test('isSequel is true only for Saturday', () => {
+  assert.equal(isSequel({ day: 'sat' }), true);
+  assert.equal(isSequel({ day: 'sun' }), false);
+  assert.equal(isSequel({ day: null }), false);
+});
+
+test('planLists orders by menu, trims custom text and labels everything', () => {
+  assert.deepEqual(planLists(satState(), copy), {
+    day: 'Saturday, 24 Oct',
+    time: '6:00 PM',
+    activities: ['Movie', 'Museum date', 'Bowling'],
+    food: ['Pizza'],
+    dessert: "Nirula's Hot Chocolate Fudge (obviously)",
+    sequel: true,
+  });
+});
+
+test('whatsAppText builds the summary, with the sequel line on Saturday', () => {
+  const expected = [
+    "Nish, it's a date! 💖",
+    '',
+    '📅 Saturday, 24 Oct',
+    '🚗 Pick-up: 6:00 PM',
+    '🎟️ Plans: Movie, Museum date, Bowling',
+    '🍽️ Food: Pizza',
+    "🍨 Dessert: Nirula's Hot Chocolate Fudge (obviously)",
+    'Coming soon: Sunday 🎞️',
+    '',
+    "Ce n'est que le début ✨",
+  ].join('\n');
+  assert.equal(whatsAppText(satState(), copy), expected);
+  const sun = { ...satState(), day: 'sun' };
+  assert.equal(whatsAppText(sun, copy).includes('Coming soon'), false);
+});
+
+test('whatsAppUrl has no number and round-trips', () => {
+  const text = whatsAppText(satState(), copy);
+  const url = whatsAppUrl(text);
+  assert.ok(url.startsWith('https://wa.me/?text='));
+  assert.equal(decodeURIComponent(url.slice('https://wa.me/?text='.length)), text);
+  assert.equal(url.includes('\n'), false);
+});
+
+test('calendarDates uses the chosen day, start time and +4 h, rolling past midnight', () => {
+  assert.equal(calendarDates({ day: 'sat', time: 32 }), '20261024T180000/20261024T220000');
+  assert.equal(calendarDates({ day: 'sun', time: 0 }), '20261025T100000/20261025T140000');
+  assert.equal(calendarDates({ day: 'sun', time: 44 }), '20261025T210000/20261026T010000');
+});
+
+test('calendarUrl carries title, dates, timezone and details', () => {
+  const url = new URL(calendarUrl(satState(), copy));
+  assert.equal(url.origin + url.pathname, 'https://calendar.google.com/calendar/render');
+  const q = url.searchParams;
+  assert.equal(q.get('action'), 'TEMPLATE');
+  assert.equal(q.get('text'), 'Date with Nish 💖');
+  assert.equal(q.get('dates'), '20261024T180000/20261024T220000');
+  assert.equal(q.get('ctz'), 'Asia/Kolkata');
+  assert.equal(q.get('details'), [
+    'Pick-up: 6:00 PM',
+    'Plans: Movie, Museum date, Bowling',
+    'Food: Pizza',
+    "Dessert: Nirula's Hot Chocolate Fudge (obviously)",
+  ].join('\n'));
 });

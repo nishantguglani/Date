@@ -75,3 +75,74 @@ export function toggleIn(list, id) {
 }
 
 export const canProceed = (list, other) => list.length > 0 || other.trim() !== '';
+
+export const isSequel = state => state.day === 'sat';
+
+function labels(ids, options, other) {
+  const out = options.filter(o => ids.includes(o.id)).map(o => o.label);
+  if (other.trim()) out.push(other.trim());
+  return out;
+}
+
+// One summary object used by the ticket, WhatsApp and Calendar.
+export function planLists(state, copy) {
+  return {
+    day: copy.days[state.day] ?? '',
+    time: timeLabel(state.time),
+    activities: labels(state.activities, copy.s3.options, state.activityOther),
+    food: labels(state.food, copy.s4.options, state.foodOther),
+    dessert: copy.s5.dessert[state.dessert ?? 'yes'],
+    sequel: isSequel(state),
+  };
+}
+
+const joinOr = (items, copy) => (items.length ? items.join(', ') : copy.summary.surprise);
+
+export function whatsAppText(state, copy) {
+  const p = planLists(state, copy);
+  const s = copy.summary;
+  const lines = [
+    copy.whatsapp.heading,
+    '',
+    `📅 ${p.day}`,
+    `🚗 ${s.pickup}: ${p.time}`,
+    `🎟️ ${s.plans}: ${joinOr(p.activities, copy)}`,
+    `🍽️ ${s.food}: ${joinOr(p.food, copy)}`,
+    `🍨 ${s.dessert}: ${p.dessert}`,
+  ];
+  if (p.sequel) lines.push(copy.finale.comingSoon);
+  lines.push('', copy.finale.title);
+  return lines.join('\n');
+}
+
+export const whatsAppUrl = text => `https://wa.me/?text=${encodeURIComponent(text)}`;
+
+const pad = n => String(n).padStart(2, '0');
+// Local wall-clock stamp; Google reads it in the ctz timezone. UTC getters avoid the machine's own zone.
+const stamp = d => `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(d.getUTCDate())}T${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}00`;
+
+export function calendarDates(state) {
+  const [y, mo, d] = config.DAYS[state.day].split('-').map(Number);
+  const start = new Date(Date.UTC(y, mo - 1, d, 0, minutesFor(state.time)));
+  const end = new Date(start.getTime() + config.EVENT_HOURS * 3600 * 1000);
+  return `${stamp(start)}/${stamp(end)}`;
+}
+
+export function calendarUrl(state, copy) {
+  const p = planLists(state, copy);
+  const s = copy.summary;
+  const details = [
+    `${s.pickup}: ${p.time}`,
+    `${s.plans}: ${joinOr(p.activities, copy)}`,
+    `${s.food}: ${joinOr(p.food, copy)}`,
+    `${s.dessert}: ${p.dessert}`,
+  ].join('\n');
+  const q = new URLSearchParams({
+    action: 'TEMPLATE',
+    text: copy.calendar.title,
+    dates: calendarDates(state),
+    ctz: config.TIMEZONE,
+    details,
+  });
+  return `https://calendar.google.com/calendar/render?${q}`;
+}
