@@ -1,0 +1,10 @@
+{
+  "name": "date",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/logic.test.js",
+    "images": "node scripts/render-images.mjs",
+    "serve": "python -m http.server 8080"
+  }
+}
