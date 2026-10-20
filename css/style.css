@@ -329,3 +329,18 @@ body.on-envelope .scene { padding-top: calc(24px + var(--sat)); }
 .plate-items span { animation: drop .4s cubic-bezier(.3, 1.6, .5, 1); }
 .plate-items span.stay { animation: none; }
 @keyframes drop { from { transform: translateY(-60px) scale(.6); opacity: 0; } }
+
+/* ============ Scene 5 ============ */
+.aside { margin: -8px 0 8px; font-size: 26px; }
+.sundae { font-size: 72px; line-height: 1; margin: 6px 0 18px; animation: bob 2.4s ease-in-out infinite; }
+@keyframes bob { 50% { transform: translateY(-6px) rotate(3deg); } }
+.dessert-row { display: flex; flex-direction: column; gap: 14px; align-items: center; }
+.tiny-no {
+  min-height: 44px; padding: 8px 14px; cursor: pointer;
+  font: 16px var(--type); color: var(--ink); opacity: .65;
+  background: transparent; border: 0; text-decoration: underline;
+}
+.tiny-no.melt { animation: melt .6s ease-in forwards; transform-origin: 50% 100%; }
+@keyframes melt { to { transform: scaleY(.15) scaleX(1.6) translateY(20px); opacity: 0; filter: blur(2px); } }
+.btn.melted { animation: pop .35s cubic-bezier(.3, 1.6, .5, 1); }
+@keyframes pop { from { transform: scale(.3); opacity: 0; } }
