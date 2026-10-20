@@ -386,3 +386,29 @@ body.on-envelope .scene { padding-top: calc(24px + var(--sat)); }
   background: var(--red); border: 4px solid var(--cream); box-shadow: 0 2px 6px rgba(0, 0, 0, .3);
 }
 @media (prefers-reduced-motion: reduce) { .sky > div { transition: none !important; } .sky .stars::before { animation: none; } }
+
+/* ============ Finale ============ */
+.finale .title { margin: 4px 0 0; font: 700 40px/1.05 var(--hand); color: var(--red); }
+.finale .subtitle { margin: 0 0 14px; font-size: 24px; }
+.ticket-wrap { width: 100%; max-width: 340px; overflow: hidden; flex: none; }
+.ticket-canvas {
+  display: block; width: 100%; height: auto; border-radius: 6px;
+  box-shadow: 0 6px 18px rgba(59, 42, 31, .25);
+  animation: print 1.1s cubic-bezier(.2, .8, .2, 1);
+}
+@keyframes print { from { transform: translateY(-100%); } }
+.sequel { max-width: 340px; margin: 16px 0 0; font-size: 24px; }
+.sequel strong { display: block; color: var(--green); }
+.credits {
+  flex: none; width: 100%; max-width: 340px; height: 110px; margin: 14px 0; overflow: hidden;
+  -webkit-mask-image: linear-gradient(transparent, #000 25%, #000 75%, transparent);
+          mask-image: linear-gradient(transparent, #000 25%, #000 75%, transparent);
+}
+.credits-roll { font: 16px/1.6 var(--type); animation: roll 9s linear infinite; }
+.credits-roll p { margin: 0 0 6px; }
+@keyframes roll { from { transform: translateY(110px); } to { transform: translateY(-100%); } }
+.finale-actions { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 320px; flex: none; }
+@media (prefers-reduced-motion: reduce) {
+  .credits { height: auto; -webkit-mask-image: none; mask-image: none; }
+  .credits-roll { animation: none !important; }
+}
