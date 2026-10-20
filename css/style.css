@@ -344,3 +344,38 @@ body.on-envelope .scene { padding-top: calc(24px + var(--sat)); }
 @keyframes melt { to { transform: scaleY(.15) scaleX(1.6) translateY(20px); opacity: 0; filter: blur(2px); } }
 .btn.melted { animation: pop .35s cubic-bezier(.3, 1.6, .5, 1); }
 @keyframes pop { from { transform: scale(.3); opacity: 0; } }
+
+/* ============ Scene 6 ============ */
+.s6 > :not(.sky) { position: relative; z-index: 1; }
+.sky { position: absolute; inset: 0; z-index: 0; }
+.sky > div { position: absolute; inset: 0; transition: opacity .3s; }
+.sky .morning { background: linear-gradient(#ffe8a3, #fff4d6 70%, var(--cream)); }
+.sky .afternoon { background: linear-gradient(#f7c45c, #fbe2a0 70%, var(--cream)); }
+.sky .sunset { background: linear-gradient(#f7a072, #e86a8a 60%, #f4d3c4); }
+.sky .night { background: linear-gradient(#141c38, #1f2a4a 70%, #3a3f63); }
+.sky .stars { opacity: 0; transition: opacity .6s; }
+.sky .stars::before {
+  content: ""; position: absolute; left: 0; top: 0; width: 3px; height: 3px; border-radius: 50%; background: #fff;
+  box-shadow: 8vw 14vh #fff, 22vw 8vh #fff, 35vw 20vh #fff, 48vw 11vh #fff, 63vw 17vh #fff, 77vw 7vh #fff, 90vw 15vh #fff,
+              14vw 30vh #fff, 41vw 33vh #fff, 70vw 28vh #fff, 85vw 36vh #fff, 5vw 44vh #fff, 57vw 42vh #fff, 94vw 48vh #fff;
+  animation: twinkle 2.5s ease-in-out infinite alternate;
+}
+@keyframes twinkle { to { opacity: .4; } }
+.s6.dark, .s6.dark .q { color: var(--cream); }
+.big-time { margin: 18px 0 4px; font: 700 76px/1 var(--hand); }
+.big-time small { font-size: 34px; }
+.cap { margin: 0; min-height: 1.3em; font-size: 30px; }
+.slider {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; max-width: 340px; height: 14px; margin-top: 30px; border-radius: 7px;
+  background: linear-gradient(90deg, #ffe8a3, #f7c45c, #e86a8a, #1f2a4a);
+}
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 40px; height: 40px; border-radius: 50%;
+  background: var(--red); border: 4px solid var(--cream); box-shadow: 0 2px 6px rgba(0, 0, 0, .3);
+}
+.slider::-moz-range-thumb {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: var(--red); border: 4px solid var(--cream); box-shadow: 0 2px 6px rgba(0, 0, 0, .3);
+}
+@media (prefers-reduced-motion: reduce) { .sky > div { transition: none !important; } }
