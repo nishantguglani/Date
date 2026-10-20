@@ -13,7 +13,7 @@ export const copy = {
   envelope: {
     to: 'For Parche 💌',
     hint: 'tap to open',
-    quote: 'Les temps sont durs pour les rêveurs.',
+    quote: 'Elle aime briser la croûte des crèmes brûlées avec la pointe de la petite cuillère.',
     letter: 'Ek chhoti si film banayi hai... sirf tumhare liye 🎬',
     roll: 'Roll camera →',
   },
