@@ -128,7 +128,8 @@ export function confetti(n = 46) {
 }
 
 // Scene index 1..7 gets a corner; the envelope (0) has no gnome.
-const CORNERS = [null, 'tl', 'bl', 'tr', 'bl', 'tr', 'bl', 'tr'];
+// Bottom-left only: on a phone the top corners hold the Back button and the heading.
+const CORNERS = [null, 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl'];
 export function placeGnome(index) {
   const g = document.getElementById('gnome');
   const corner = CORNERS[index];

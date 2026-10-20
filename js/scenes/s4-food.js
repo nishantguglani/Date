@@ -15,8 +15,10 @@ export function render(stage, { state, copy, config, next, signal }) {
     </div>
     <label class="sr-only" for="food-other">${c.placeholder}</label>
     <input id="food-other" class="write" type="text" maxlength="${config.INPUT_MAX}" placeholder="${c.placeholder}" autocomplete="off" enterkeyhint="done">
-    <div class="plate" aria-hidden="true">${plate}<div class="plate-items"></div></div>
-    <button class="btn next" type="button" hidden>${copy.chrome.next}</button>`;
+    <div class="plate-row">
+      <div class="plate" aria-hidden="true">${plate}<div class="plate-items"></div></div>
+      <button class="btn next" type="button" hidden>${copy.chrome.next}</button>
+    </div>`;
 
   const items = stage.querySelector('.plate-items');
   const drawPlate = () => {
