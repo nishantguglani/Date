@@ -9,8 +9,9 @@ export function render(stage, { state, copy, fx, signal }) {
     <h1 class="title" tabindex="-1">${c.title}</h1>
     <p class="subtitle">${c.subtitle}</p>
     <div class="ticket-wrap">
-      <canvas class="ticket-canvas" width="1080" height="1350" role="img" aria-label="${c.ticketAlt}"></canvas>
+      <img class="ticket-canvas" width="1080" height="1350" alt="${c.ticketAlt}">
     </div>
+    <p class="ticket-tip" hidden></p>
     ${p.sequel ? `<p class="sequel"><strong>${c.sequelQuote}</strong>${c.sequelLine}</p>` : ''}
     <div class="credits"><div class="credits-roll">${c.credits.map(l => `<p>${l}</p>`).join('')}</div></div>
     <div class="finale-actions">
@@ -18,12 +19,30 @@ export function render(stage, { state, copy, fx, signal }) {
       <button class="btn gold save" type="button">${c.save}</button>
     </div>`;
 
-  const canvas = stage.querySelector('canvas');
+  // The canvas stays off-screen; the visible ticket is an <img> so it can be long-pressed to save.
+  const canvas = document.createElement('canvas');
+  canvas.width = 1080;
+  canvas.height = 1350;
+  const img = stage.querySelector('.ticket-canvas');
+  const draw = () => {
+    drawTicket(canvas, p, copy);
+    img.src = canvas.toDataURL('image/png');
+  };
   // Draw now with whatever fonts are ready, then again once Caveat / Special Elite load.
-  drawTicket(canvas, p, copy);
-  Promise.all([document.fonts.load('700 72px Caveat'), document.fonts.load('48px "Special Elite"')])
+  draw();
+  (document.fonts
+    ? Promise.all([document.fonts.load('700 72px Caveat'), document.fonts.load('48px "Special Elite"')])
+    : Promise.resolve())
     .catch(() => {})
-    .then(() => { if (!signal.aborted) drawTicket(canvas, p, copy); });
+    .then(() => { if (!signal.aborted) draw(); });
+
+  // iOS and in-app browsers ignore a[download], so point people at long-press.
+  const ua = navigator.userAgent;
+  if (/iPhone|iPad|iPod/.test(ua) || /FBAN|FBAV|Instagram|WhatsApp|Line\//.test(ua)) {
+    const tip = stage.querySelector('.ticket-tip');
+    tip.textContent = 'Tip: long-press the ticket to save it 📲';
+    tip.hidden = false;
+  }
 
   fx.confetti();
 

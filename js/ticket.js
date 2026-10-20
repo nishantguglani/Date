@@ -18,8 +18,17 @@ function wrap(g, text, maxW, maxLines) {
   let line = '';
   for (const word of words) {
     const t = line ? `${line} ${word}` : word;
-    if (g.measureText(t).width <= maxW || !line) line = t;
-    else { lines.push(line); line = word; }
+    if (g.measureText(t).width <= maxW) { line = t; continue; }
+    if (line) { lines.push(line); line = ''; }
+    // A single token wider than maxW gets broken by character.
+    let rest = word;
+    while (rest && g.measureText(rest).width > maxW) {
+      let n = rest.length - 1;
+      while (n > 1 && g.measureText(rest.slice(0, n)).width > maxW) n--;
+      lines.push(rest.slice(0, n));
+      rest = rest.slice(n);
+    }
+    line = rest;
   }
   if (line) lines.push(line);
   if (lines.length <= maxLines) return lines;
